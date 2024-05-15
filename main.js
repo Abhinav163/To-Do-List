@@ -1,16 +1,16 @@
+// Elements
 const tasksList = document.querySelector("#tasks-list")
 const addTaskForm = document.querySelector("form#add-task")
 const addTaskInput = document.querySelector("#add-task-input")
 const clearAllTasksBtn = document.querySelector("button#clear-all-tasks")
-
 let list = JSON.parse(localStorage.getItem("tasks")) || []
-
 function showTasksList() {
   tasksList.innerHTML = ""
   const list = JSON.parse(localStorage.getItem("tasks")) || []
 
   if (list.length === 0) {
     clearAllTasksBtn.disabled = true
+
     const element = String.raw`
 			<div class="ui icon warning message">
 				<i class="inbox icon"></i>
@@ -41,14 +41,12 @@ function showTasksList() {
 			`
     tasksList.insertAdjacentHTML("beforeend", element)
   })
-
   document.querySelectorAll(`li i.edit`).forEach(item => {
     item.addEventListener("click", e => {
       e.stopPropagation()
       showEditModal(+e.target.dataset.id)
     })
   })
-
   document.querySelectorAll(`li i.trash`).forEach(item => {
     item.addEventListener("click", e => {
       e.stopPropagation()
@@ -76,7 +74,6 @@ function addTask(event) {
   showNotification("success", "Task was successfully added")
   showTasksList()
 }
-
 function completeTask(id) {
   const taskIndex = list.findIndex(t => t.id == id)
   const task = list[taskIndex]
@@ -85,24 +82,25 @@ function completeTask(id) {
   localStorage.setItem("tasks", JSON.stringify(list))
   showTasksList()
 }
-
 function removeTask(id) {
   list = list.filter(t => t.id !== id)
   localStorage.setItem("tasks", JSON.stringify(list))
+
   showNotification("error", "Task was successfully deleted")
   showTasksList()
 }
-
 function editTask(id) {
   const taskText = document.querySelector("#task-text").value
+
   if (taskText.trim().length === 0) return
   const taskIndex = list.findIndex(t => t.id == id)
+
   list[taskIndex].text = taskText
   localStorage.setItem("tasks", JSON.stringify(list))
+
   showNotification("success", "Task was successfully updated")
   showTasksList()
 }
-
 function clearAllTasks() {
   if (list.length > 0) {
     list = []
@@ -120,7 +118,6 @@ function clearAllTasks() {
     theme: "metroui",
   }).show()
 }
-
 function clearCompleteTasks() {
   if (list.length > 0) {
     if (confirm("Are you sure?")) {
@@ -140,25 +137,30 @@ function clearCompleteTasks() {
     stopOnFocus: true,
   }).showToast()
 }
-
 function showEditModal(id) {
   const taskIndex = list.findIndex(t => t.id == id)
   const { text } = list[taskIndex]
+
   document.querySelector("#edit-modal .content #task-id").value = id
   document.querySelector("#edit-modal .content #task-text").value = text.trim()
-  document.querySelector("#update-button").addEventListener("click", () => editTask(+id))
+  document
+    .querySelector("#update-button")
+    .addEventListener("click", () => editTask(+id))
+
   $("#edit-modal.modal").modal("show")
 }
-
 function showRemoveModal(id) {
-  document.querySelector("#remove-button").addEventListener("click", () => removeTask(+id))
+  document
+    .querySelector("#remove-button")
+    .addEventListener("click", () => removeTask(+id))
+
   $("#remove-modal.modal").modal("show")
 }
-
 function showClearAllTasksModal() {
   if (list.length > 0) {
     return $("#clear-all-tasks-modal.modal").modal("show")
   }
+
   new Noty({
     type: "error",
     text: '<i class="close icon"></i> There is no task to remove.',
@@ -181,7 +183,6 @@ function showNotification(type, text) {
     theme: "metroui",
   }).show()
 }
-
 addTaskForm.addEventListener("submit", addTask)
 window.addEventListener("load", () => addTaskInput.focus())
 
